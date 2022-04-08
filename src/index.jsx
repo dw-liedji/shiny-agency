@@ -8,93 +8,40 @@ import Error from './components/Error'
 import Header from './components/Header'
 import {BrowserRouter as Router} from 'react-router-dom'
 import {Route, Switch} from 'react-router-dom'
-import {createGlobalStyle} from 'styled-components'
 import colors from './utils/styles/colors'
+import GlobalStyle from './utils/styles/GlobalStyle'
 import FreelanceDetails from './pages/FreelanceDetails'
+import {ThemeProvider} from './utils/utils/context'
+import Footer from './components/Footer'
 
-const GlobalStyle = createGlobalStyle`
-  
-*,*::before, *::after {
-  box-sizing: border-box;
-}
-
-/* Typography */
-
-html {
-  font-size: 62.5%;
-}
-
-body {
-  font-family: 'Trebuchet MS', Inter, Arial, Helvetica, sans-serif;
-  font-size: 2.4rem;
-  line-height: 1.5;
-  margin: 0;
-}
-
-h1 {
-  font-size: 6rem;
-}
-
-h2 {
-  font-size: 4rem;
-}
-h3 {
-  font-size:3rem;
-}
-
-h1, h2, h3 {
-  color: ${colors.primary};
-  margin-bottom: 1rem;
-  line-height: 1.1;
-}
-
-p {
-  margin-top: 0px;
-}
-
-@media screen and (min-width:1024px) {
-  body{
-      font-size: 1.8rem;
-  }
-
-  h1 {
-      font-size: 8rem;
-  }
-
-  h3 {
-      font-size: 4rem;
-  }
-
-  h3 {
-      font-size: 2.4rem;
-  }
-}
-`
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <GlobalStyle />
-      <Header />
-      <Switch>
-        <Route exact path="/">
-          <Home />
-        </Route>
-        <Route path="/survey/:questionNumber">
-          <Survey />
-        </Route>
-        <Route path="/freelances">
-          <Freelances />
-        </Route>
-        <Route path="/freelanceDetails/:freelancesId">
-          <FreelanceDetails />
-        </Route>
-        <Route path="/results">
-          <Results />
-        </Route>
-        <Route>
-          <Error />
-        </Route>
-      </Switch>
+      <ThemeProvider>
+        <GlobalStyle />
+        <Header />
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/survey/:questionNumber">
+            <Survey />
+          </Route>
+          <Route path="/freelances">
+            <Freelances />
+          </Route>
+          <Route path="/freelanceDetails/:freelancesId">
+            <FreelanceDetails />
+          </Route>
+          <Route path="/results">
+            <Results />
+          </Route>
+          <Route>
+            <Error />
+          </Route>
+        </Switch>
+        <Footer />
+      </ThemeProvider>
     </Router>
   </React.StrictMode>,
   document.getElementById('root')
