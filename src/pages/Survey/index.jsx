@@ -5,6 +5,55 @@ import styled from 'styled-components'
 import {useEffect, useState} from 'react'
 import {Loader} from '../../utils/Atom'
 
+const Survey = () => {
+  const {questionNumber} = useParams()
+  const questionNumberInt = parseInt(questionNumber)
+  const prevQuestionNumber = questionNumberInt === 1 ? 1 : questionNumberInt - 1
+  const nextQuestionNumber = questionNumberInt + 1
+
+  const [surveyData, setSurveyData] = useState({})
+  const [isDataLoading, setDataLoading] = useState(false)
+
+  useEffect(() => {
+    async function fetchSurveyData() {
+      try {
+        setDataLoading(true)
+        const response = await fetch(`http://localhost:8000/survey`)
+        const {surveyData} = await response.json()
+        setSurveyData(surveyData)
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setDataLoading(false)
+      }
+    }
+
+    fetchSurveyData()
+  }, [])
+  return (
+    <SurveyContainer>
+      <QuestionNumber>Question {questionNumberInt}</QuestionNumber>
+      {isDataLoading ? (
+        <Loader />
+      ) : (
+        <QuestionContent>{surveyData[questionNumberInt]}</QuestionContent>
+      )}
+      <PrevNextContainer>
+        <StyledButton>Oui</StyledButton>
+        <StyledButton>Non</StyledButton>
+      </PrevNextContainer>
+      <PrevNextContainer>
+        <StyledLink to={`/survey/${prevQuestionNumber}`}>Précédent</StyledLink>
+        {surveyData[questionNumberInt + 1] ? (
+          <StyledLink to={`/survey/${nextQuestionNumber}`}>Suivant</StyledLink>
+        ) : (
+          <StyledLink to="/results">Results</StyledLink>
+        )}
+      </PrevNextContainer>
+    </SurveyContainer>
+  )
+}
+
 const SurveyContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -58,67 +107,5 @@ const StyledButton = styled.button`
   padding: 2.5rem 10rem;
   margin: 10px 15px;
 `
-
-const Survey = () => {
-  const {questionNumber} = useParams()
-  const questionNumberInt = parseInt(questionNumber)
-  const prevQuestionNumber = questionNumberInt === 1 ? 1 : questionNumberInt - 1
-  const nextQuestionNumber = questionNumberInt + 1
-
-  const [surveyData, setSurveyData] = useState({})
-  const [isDataLoading, setDataLoading] = useState(false)
-
-  // useEffect(() => {
-  //   setDataLoading(true)
-  //   fetch(`http://localhost:8000/survey`).then((response) =>
-  //     response
-  //       .json()
-  //       .then(({surveyData}) => {
-  //         setSurveyData(surveyData)
-  //         setDataLoading(false)
-  //       })
-  //       .catch((error) => console.log(error))
-  //   )
-  // }, [])
-
-  useEffect(() => {
-    async function fetchSurveyData() {
-      try {
-        setDataLoading(true)
-        const response = await fetch(`http://localhost:8000/survey`)
-        const {surveyData} = await response.json()
-        setSurveyData(surveyData)
-      } catch (error) {
-        console.log(error)
-      } finally {
-        setDataLoading(false)
-      }
-    }
-
-    fetchSurveyData()
-  }, [])
-  return (
-    <SurveyContainer>
-      <QuestionNumber>Question {questionNumberInt}</QuestionNumber>
-      {isDataLoading ? (
-        <Loader />
-      ) : (
-        <QuestionContent>{surveyData[questionNumberInt]}</QuestionContent>
-      )}
-      <PrevNextContainer>
-        <StyledButton>Oui</StyledButton>
-        <StyledButton>Non</StyledButton>
-      </PrevNextContainer>
-      <PrevNextContainer>
-        <StyledLink to={`/survey/${prevQuestionNumber}`}>Précédent</StyledLink>
-        {surveyData[questionNumberInt + 1] ? (
-          <StyledLink to={`/survey/${nextQuestionNumber}`}>Suivant</StyledLink>
-        ) : (
-          <StyledLink to="/results">Results</StyledLink>
-        )}
-      </PrevNextContainer>
-    </SurveyContainer>
-  )
-}
 
 export default Survey
